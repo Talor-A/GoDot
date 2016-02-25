@@ -17,6 +17,10 @@ var direction = Vector2(-1,0)
 const PAD_SPEED = 150
 
 
+var score_left  = 0
+var score_right = 0
+
+
 func _ready():
 	# Called every time the node is added to the scene.
 	# Initialization her
@@ -25,10 +29,16 @@ func _ready():
 	set_process(true)
 	pass
 	
+func _draw():
+	var r = Rect2(Vector2(), screen_size)
+	
+	
 func _process(delta):
 	var ball_pos = get_node("ball").get_pos()
 	var left_rect = Rect2( get_node("left").get_pos() - pad_size/2, pad_size )
 	var right_rect = Rect2( get_node("right").get_pos() - pad_size/2, pad_size )
+	
+	
 	
 	ball_pos+=direction*ball_speed*delta
 	
@@ -41,10 +51,17 @@ func _process(delta):
     direction.y=randf()*2.0-1
     direction = direction.normalized()
 
-	if (ball_pos.x<0 or ball_pos.x>screen_size.x):
-	    ball_pos=screen_size*0.5 #ball goes to screen center
-	    ball_speed=80
-	    direction=Vector2(-1,0)
+	if (ball_pos.x<0):
+		ball_pos=screen_size*0.5 #ball goes to screen center
+		ball_speed=80
+		direction=Vector2(-1,0)
+		score_right += 1
+		
+	elif (ball_pos.x>screen_size.x):
+		ball_pos=screen_size*0.5 #ball goes to screen 
+		ball_speed=80
+		direction=Vector2(-1,0)
+		score_left += 1
 	
 	get_node("ball").set_pos(ball_pos)
 	
@@ -67,3 +84,10 @@ func _process(delta):
 	    right_pos.y+=PAD_SPEED*delta
 	
 	get_node("right").set_pos(right_pos)
+	
+	
+	
+	
+	
+	get_node("label_left").set_text(str(score_left))
+	get_node("label_right").set_text(str(score_right))
